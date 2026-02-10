@@ -256,6 +256,15 @@ function PhoneMockup() {
   );
 }
 
+function BadgePill({ icon, text }: { icon: string; text: string }) {
+  return (
+    <div className="flex items-center gap-2 bg-slate-800/70 border border-slate-700/40 rounded-full px-4 py-2 shrink-0">
+      <span className="text-base">{icon}</span>
+      <span className="text-white text-xs font-medium whitespace-nowrap">{text}</span>
+    </div>
+  );
+}
+
 function Badge({
   icon,
   label,
@@ -314,13 +323,22 @@ export default function Home() {
       </section>
 
       {/* Phone + Badges + Glow */}
-      {/* Mobile badges - horizontal scroll */}
-      <section className="md:hidden px-4 pt-2 pb-3 z-10 relative">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
-          <Badge icon="💬" label="Real-time" value="Engagement" />
-          <Badge icon="📅" label="Scheduling" value="Zero Back & Forth" />
-          <Badge icon="📊" label="Real-time" value="Ops Reporting" />
+      {/* Mobile badges - marquee */}
+      <section className="md:hidden pt-2 pb-2 z-10 relative overflow-hidden">
+        <div className="animate-marquee flex gap-4 w-max">
+          <BadgePill icon="🎯" text="Lead Generation" />
+          <BadgePill icon="💬" text="Customer Engagement" />
+          <BadgePill icon="📅" text="Smart Scheduling" />
+          <BadgePill icon="📊" text="Ops Reporting" />
+          <BadgePill icon="🔗" text="CRM Integrations" />
+          <BadgePill icon="💬" text="24/7 Messaging" />
+          {/* Duplicate for seamless loop */}
+          <BadgePill icon="🎯" text="Lead Generation" />
+          <BadgePill icon="💬" text="Customer Engagement" />
+          <BadgePill icon="📅" text="Smart Scheduling" />
+          <BadgePill icon="📊" text="Ops Reporting" />
+          <BadgePill icon="🔗" text="CRM Integrations" />
+          <BadgePill icon="💬" text="24/7 Messaging" />
         </div>
       </section>
 
@@ -336,24 +354,24 @@ export default function Home() {
           <div className="w-[250px] h-[250px] bg-indigo-500/8 rounded-full blur-[80px]" />
         </div>
 
-        {/* Desktop badges behind phone - more spread out */}
+        {/* Desktop badges - positioned around the phone */}
         <div className="relative z-0 hidden md:block">
-          <div className="absolute -top-2 left-0 lg:left-4 animate-float-slow">
+          <div className="absolute top-16 left-0 lg:-left-8 animate-float-slow">
             <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
           </div>
-          <div className="absolute -top-2 right-0 lg:right-4 animate-float-slow-reverse">
+          <div className="absolute top-16 right-0 lg:-right-8 animate-float-slow-reverse">
             <Badge icon="💬" label="Real-time" value="Customer Engagement" />
           </div>
-          <div className="absolute top-52 -left-8 lg:-left-4 animate-float-slow-reverse">
+          <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-12 animate-float-slow-reverse">
             <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
           </div>
-          <div className="absolute top-52 -right-8 lg:-right-4 animate-float-slow">
+          <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-12 animate-float-slow">
             <Badge icon="💬" label="Automated" value="24/7 Messaging" />
           </div>
-          <div className="absolute bottom-12 left-8 lg:left-16 animate-float-slow">
+          <div className="absolute bottom-20 left-4 lg:-left-4 animate-float-slow">
             <Badge icon="📊" label="Real-time" value="Ops Reporting" />
           </div>
-          <div className="absolute bottom-12 right-8 lg:right-16 animate-float-slow-reverse">
+          <div className="absolute bottom-20 right-4 lg:-right-4 animate-float-slow-reverse">
             <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
           </div>
         </div>
