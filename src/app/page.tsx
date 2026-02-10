@@ -352,31 +352,31 @@ export default function Home() {
           <div className="w-[250px] h-[250px] bg-indigo-500/8 rounded-full blur-[80px]" />
         </div>
 
-        {/* Desktop badges - positioned around the phone */}
-        <div className="relative z-0 hidden md:block">
-          <div className="absolute top-16 left-0 lg:-left-8 animate-float-slow">
-            <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
-          </div>
-          <div className="absolute top-16 right-0 lg:-right-8 animate-float-slow-reverse">
-            <Badge icon="💬" label="Real-time" value="Customer Engagement" />
-          </div>
-          <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-12 animate-float-slow-reverse">
-            <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
-          </div>
-          <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-12 animate-float-slow">
-            <Badge icon="💬" label="Automated" value="24/7 Messaging" />
-          </div>
-          <div className="absolute bottom-20 left-4 lg:-left-4 animate-float-slow">
-            <Badge icon="📊" label="Real-time" value="Ops Reporting" />
-          </div>
-          <div className="absolute bottom-20 right-4 lg:-right-4 animate-float-slow-reverse">
-            <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
-          </div>
-        </div>
-
         {/* Phone with 3D tilt */}
         <div className="relative z-10 flex justify-center phone-3d">
           <PhoneMockup />
+
+          {/* Desktop badges - positioned around the phone */}
+          <div className="absolute inset-0 hidden md:block pointer-events-none">
+            <div className="absolute top-8 left-0 lg:-left-8 animate-float-slow pointer-events-auto">
+              <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
+            </div>
+            <div className="absolute top-8 right-0 lg:-right-8 animate-float-slow-reverse pointer-events-auto">
+              <Badge icon="💬" label="Real-time" value="Customer Engagement" />
+            </div>
+            <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-12 animate-float-slow-reverse pointer-events-auto">
+              <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
+            </div>
+            <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-12 animate-float-slow pointer-events-auto">
+              <Badge icon="💬" label="Automated" value="24/7 Messaging" />
+            </div>
+            <div className="absolute bottom-8 left-4 lg:-left-4 animate-float-slow pointer-events-auto">
+              <Badge icon="📊" label="Real-time" value="Ops Reporting" />
+            </div>
+            <div className="absolute bottom-8 right-4 lg:-right-4 animate-float-slow-reverse pointer-events-auto">
+              <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
+            </div>
+          </div>
         </div>
       </section>
 
