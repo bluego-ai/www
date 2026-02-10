@@ -325,15 +325,19 @@ export default function Home() {
 
       {/* Phone + Badges + Glow */}
       {/* Mobile badges - marquee */}
-      <section className="md:hidden pt-2 pb-2 z-10 relative">
-        <Marquee className="[--duration:25s]" pauseOnHover>
-          <BadgePill icon="🎯" text="Lead Generation" />
-          <BadgePill icon="💬" text="Customer Engagement" />
-          <BadgePill icon="📅" text="Smart Scheduling" />
-          <BadgePill icon="📊" text="Ops Reporting" />
-          <BadgePill icon="🔗" text="CRM Integrations" />
-          <BadgePill icon="💬" text="24/7 Messaging" />
-        </Marquee>
+      <section className="lg:hidden pt-2 pb-2 z-10 relative">
+        <div className="relative">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+          <Marquee className="[--duration:25s]" pauseOnHover>
+            <BadgePill icon="🎯" text="Lead Generation" />
+            <BadgePill icon="💬" text="Customer Engagement" />
+            <BadgePill icon="📅" text="Smart Scheduling" />
+            <BadgePill icon="📊" text="Ops Reporting" />
+            <BadgePill icon="🔗" text="CRM Integrations" />
+            <BadgePill icon="💬" text="24/7 Messaging" />
+          </Marquee>
+        </div>
       </section>
 
       <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-20">
@@ -349,7 +353,7 @@ export default function Home() {
         </div>
 
         {/* Desktop badges - positioned around the phone */}
-        <div className="relative z-0 hidden md:block">
+        <div className="relative z-0 hidden lg:block">
           <div className="absolute top-16 left-0 lg:-left-8 animate-float-slow">
             <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
           </div>
