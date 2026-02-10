@@ -358,22 +358,22 @@ export default function Home() {
 
           {/* Desktop badges - positioned around the phone */}
           <div className="absolute inset-0 hidden md:block pointer-events-none">
-            <div className="absolute top-8 left-0 lg:-left-8 animate-float-slow pointer-events-auto">
+            <div className="absolute top-8 -left-4 lg:-left-6 animate-float-slow pointer-events-auto">
               <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
             </div>
-            <div className="absolute top-8 right-0 lg:-right-8 animate-float-slow-reverse pointer-events-auto">
+            <div className="absolute top-8 -right-4 lg:-right-6 animate-float-slow-reverse pointer-events-auto">
               <Badge icon="💬" label="Real-time" value="Customer Engagement" />
             </div>
-            <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-12 animate-float-slow-reverse pointer-events-auto">
+            <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-6 animate-float-slow-reverse pointer-events-auto">
               <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
             </div>
-            <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-12 animate-float-slow pointer-events-auto">
+            <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-6 animate-float-slow pointer-events-auto">
               <Badge icon="💬" label="Automated" value="24/7 Messaging" />
             </div>
-            <div className="absolute bottom-8 left-4 lg:-left-4 animate-float-slow pointer-events-auto">
+            <div className="absolute bottom-8 -left-4 lg:-left-6 animate-float-slow pointer-events-auto">
               <Badge icon="📊" label="Real-time" value="Ops Reporting" />
             </div>
-            <div className="absolute bottom-8 right-4 lg:-right-4 animate-float-slow-reverse pointer-events-auto">
+            <div className="absolute bottom-8 -right-4 lg:-right-6 animate-float-slow-reverse pointer-events-auto">
               <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
             </div>
           </div>
