@@ -294,18 +294,17 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="relative max-w-4xl mx-auto px-6 pt-12 pb-8 text-center z-10">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+      <section className="relative max-w-4xl mx-auto px-6 pt-6 pb-4 text-center z-10">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
           Your AI-Powered
-          <br />
-          <span className="text-blue-400">Operations Team.</span>
+          <span className="text-blue-400"> Operations Team.</span>
         </h1>
-        <p className="mt-5 text-base md:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
-          We deploy and manage intelligent AI assistants that handle
-          communications, scheduling, lead generation, and operations — so you
-          can focus on growing your business.
+        <p className="mt-3 text-sm md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
+          We deploy and manage AI assistants that handle communications,
+          scheduling, lead generation, and operations — so you can focus on
+          growing your business.
         </p>
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="#contact"
             className="rounded-full bg-blue-500 hover:bg-blue-400 px-7 py-3 text-sm font-semibold transition-colors"
@@ -322,7 +321,7 @@ export default function Home() {
       </section>
 
       {/* Phone + Badges + Glow */}
-      <section className="relative max-w-5xl mx-auto px-6 pt-8 pb-24">
+      <section className="relative max-w-5xl mx-auto px-6 pt-4 pb-20">
         {/* Background glow */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
@@ -336,21 +335,21 @@ export default function Home() {
 
         {/* Badges behind phone */}
         <div className="relative z-0">
-          {/* Top left badge */}
+          {/* Top left badge - Lead Gen (most compelling) */}
           <div className="absolute top-4 left-0 md:left-8 hidden md:block animate-float-slow">
-            <Badge icon="💬" label="Automated" value="24/7 Messaging" />
+            <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
           </div>
           {/* Top right badge */}
           <div className="absolute top-4 right-0 md:right-8 hidden md:block animate-float-slow-reverse">
-            <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
+            <Badge icon="💬" label="Real-time" value="Customer Engagement" />
           </div>
           {/* Mid left badge */}
           <div className="absolute top-48 -left-4 md:left-0 hidden md:block animate-float-slow-reverse">
-            <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
+            <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
           </div>
           {/* Mid right badge */}
           <div className="absolute top-48 -right-4 md:right-0 hidden md:block animate-float-slow">
-            <Badge icon="⚙️" label="Crew Management" value="25+ Crews Tracked" />
+            <Badge icon="💬" label="Automated" value="24/7 Messaging" />
           </div>
           {/* Bottom left */}
           <div className="absolute bottom-16 left-4 md:left-16 hidden md:block animate-float-slow">
