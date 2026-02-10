@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { Marquee } from "@/components/ui/marquee";
 
 interface Message {
   role: "user" | "assistant";
@@ -324,22 +325,15 @@ export default function Home() {
 
       {/* Phone + Badges + Glow */}
       {/* Mobile badges - marquee */}
-      <section className="md:hidden pt-2 pb-2 z-10 relative overflow-hidden">
-        <div className="animate-marquee flex gap-4 w-max">
+      <section className="md:hidden pt-2 pb-2 z-10 relative">
+        <Marquee className="[--duration:25s]" pauseOnHover>
           <BadgePill icon="🎯" text="Lead Generation" />
           <BadgePill icon="💬" text="Customer Engagement" />
           <BadgePill icon="📅" text="Smart Scheduling" />
           <BadgePill icon="📊" text="Ops Reporting" />
           <BadgePill icon="🔗" text="CRM Integrations" />
           <BadgePill icon="💬" text="24/7 Messaging" />
-          {/* Duplicate for seamless loop */}
-          <BadgePill icon="🎯" text="Lead Generation" />
-          <BadgePill icon="💬" text="Customer Engagement" />
-          <BadgePill icon="📅" text="Smart Scheduling" />
-          <BadgePill icon="📊" text="Ops Reporting" />
-          <BadgePill icon="🔗" text="CRM Integrations" />
-          <BadgePill icon="💬" text="24/7 Messaging" />
-        </div>
+        </Marquee>
       </section>
 
       <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-20">
