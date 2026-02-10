@@ -1,10 +1,61 @@
 @import "tailwindcss";
 
+/* Floating animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
 }
 
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes float-slow-reverse {
+  0%, 100% { transform: translateY(-12px); }
+  50% { transform: translateY(0px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-slow-reverse {
+  animation: float-slow-reverse 8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* 3D phone tilt */
+.phone-3d {
+  perspective: 1000px;
+}
+
+.phone-3d > div {
+  transform: rotateX(4deg) rotateY(-2deg);
+  transition: transform 0.3s ease;
+}
+
+.phone-3d:hover > div {
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

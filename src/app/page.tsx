@@ -1,92 +1,247 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState, useRef } from "react";
+
+interface Message {
+  role: "user" | "assistant";
+  text: string;
+}
+
+const conversation: Message[] = [
+  { role: "user", text: "Theodore, give me a report on today's operations" },
+  {
+    role: "assistant",
+    text: `**BOTV Operations Report – Feb 9, 2026**
+
+🔥 **Sales (Big Day!)**
+• 2 new paid clients signed
+• Setoudeh (pool + spa remodel)
+• Sooy (decking, pergola, BBQ)
+
+✅ **Loops Closed**
+• Leeming aerators — answered
+• Viedma showerhead — arrived
+• Jamil site visit scheduled Feb 17
+• Arora car charger — APPROVED by city
+
+📋 **Crew Status**
+• 23 of 25 crews active today
+• 2 crews on weather hold
+• All jobs on schedule ✓`,
+  },
+  {
+    role: "user",
+    text: "Nice. Schedule a call with Setoudeh for Thursday at 2pm",
+  },
+  {
+    role: "assistant",
+    text: "Done. ✅ Setoudeh confirmed for Thursday Feb 13 @ 2:00 PM. Calendar invite sent to both parties.",
+  },
+];
+
+function TypingIndicator() {
+  return (
+    <div className="flex justify-start">
+      <div className="bg-slate-800 rounded-2xl rounded-bl-md px-4 py-3 flex gap-1.5 items-center">
+        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0ms]" />
+        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:150ms]" />
+        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:300ms]" />
+      </div>
+    </div>
+  );
+}
+
+function formatMessage(text: string) {
+  // Bold **text**
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <span key={i} className="font-semibold text-blue-400">
+          {part.slice(2, -2)}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
+function AnimatedChat() {
+  const [visibleMessages, setVisibleMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingRole, setTypingRole] = useState<"user" | "assistant">("user");
+  const [currentText, setCurrentText] = useState("");
+  const chatRef = useRef<HTMLDivElement>(null);
+  const cycleRef = useRef(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function sleep(ms: number) {
+      return new Promise((r) => setTimeout(r, ms));
+    }
+
+    async function typeMessage(msg: Message) {
+      if (cancelled) return;
+      setTypingRole(msg.role);
+      setIsTyping(true);
+
+      // Typing indicator duration
+      const typingDelay = msg.role === "assistant" ? 1500 : 800;
+      await sleep(typingDelay);
+      if (cancelled) return;
+
+      setIsTyping(false);
+
+      // Character-by-character typing for user, chunk for assistant
+      if (msg.role === "user") {
+        for (let i = 0; i <= msg.text.length; i++) {
+          if (cancelled) return;
+          setCurrentText(msg.text.slice(0, i));
+          await sleep(30);
+        }
+        await sleep(200);
+        setCurrentText("");
+        setVisibleMessages((prev) => [...prev, msg]);
+      } else {
+        // Assistant types in chunks (lines)
+        const lines = msg.text.split("\n");
+        let accumulated = "";
+        for (let i = 0; i < lines.length; i++) {
+          if (cancelled) return;
+          accumulated += (i > 0 ? "\n" : "") + lines[i];
+          setCurrentText(accumulated);
+          await sleep(80);
+        }
+        await sleep(300);
+        setCurrentText("");
+        setVisibleMessages((prev) => [...prev, msg]);
+      }
+
+      await sleep(500);
+    }
+
+    async function runConversation() {
+      while (!cancelled) {
+        setVisibleMessages([]);
+        setCurrentText("");
+        setIsTyping(false);
+        await sleep(1500);
+
+        for (const msg of conversation) {
+          if (cancelled) return;
+          await typeMessage(msg);
+        }
+
+        // Pause before restarting
+        await sleep(4000);
+        cycleRef.current++;
+      }
+    }
+
+    runConversation();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Auto-scroll
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [visibleMessages, currentText, isTyping]);
+
+  return (
+    <div
+      ref={chatRef}
+      className="bg-black/90 px-3 py-4 space-y-3 h-[420px] overflow-y-auto scrollbar-hide"
+    >
+      {visibleMessages.map((msg, i) => (
+        <div
+          key={`${cycleRef.current}-${i}`}
+          className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
+        >
+          <div
+            className={`text-[13px] rounded-2xl px-4 py-2.5 max-w-[88%] leading-relaxed whitespace-pre-line ${
+              msg.role === "user"
+                ? "bg-blue-500 text-white rounded-br-md"
+                : "bg-slate-800 text-slate-100 rounded-bl-md"
+            }`}
+          >
+            {formatMessage(msg.text)}
+          </div>
+        </div>
+      ))}
+
+      {/* Currently typing text */}
+      {currentText && !isTyping && (
+        <div
+          className={`flex ${typingRole === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
+        >
+          <div
+            className={`text-[13px] rounded-2xl px-4 py-2.5 max-w-[88%] leading-relaxed whitespace-pre-line ${
+              typingRole === "user"
+                ? "bg-blue-500 text-white rounded-br-md"
+                : "bg-slate-800 text-slate-100 rounded-bl-md"
+            }`}
+          >
+            {formatMessage(currentText)}
+            <span className="inline-block w-0.5 h-4 bg-current ml-0.5 animate-pulse align-middle" />
+          </div>
+        </div>
+      )}
+
+      {/* Typing indicator */}
+      {isTyping && <TypingIndicator />}
+    </div>
+  );
+}
 
 function PhoneMockup() {
   return (
-    <div className="relative mx-auto w-[320px] md:w-[360px]">
+    <div className="relative mx-auto w-[300px] md:w-[340px]">
       {/* Phone frame */}
-      <div className="rounded-[3rem] border-[8px] border-slate-700 bg-black shadow-2xl shadow-blue-500/20 overflow-hidden">
-        {/* Status bar */}
-        <div className="bg-black px-6 pt-3 pb-1 flex justify-between items-center text-[11px] text-white/70">
-          <span>9:41</span>
-          <div className="w-28 h-7 bg-black rounded-full mx-auto" />
-          <span className="flex gap-1 items-center">
-            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M2 22h20V2z" opacity=".3"/><path d="M12 7V2L2 22h20z"/></svg>
-            100%
-          </span>
+      <div className="rounded-[3rem] border-[8px] border-slate-700/80 bg-black shadow-2xl overflow-hidden">
+        {/* Notch */}
+        <div className="bg-black px-6 pt-2 pb-1 flex justify-center">
+          <div className="w-28 h-6 bg-black rounded-full border border-slate-800/50" />
         </div>
 
         {/* Chat header */}
-        <div className="bg-slate-900/95 backdrop-blur px-4 py-3 flex items-center gap-3 border-b border-slate-800">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold">
+        <div className="bg-slate-900/95 backdrop-blur px-4 py-2.5 flex items-center gap-3 border-b border-slate-800">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">
             🦬
           </div>
           <div>
-            <div className="text-sm font-semibold text-white">Theodore</div>
-            <div className="text-[11px] text-green-400">Online</div>
+            <div className="text-[13px] font-semibold text-white">Theodore</div>
+            <div className="text-[10px] text-green-400">Online</div>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="bg-black px-3 py-4 space-y-3 min-h-[420px]">
-          {/* User message */}
-          <div className="flex justify-end">
-            <div className="bg-blue-500 text-white text-[13px] rounded-2xl rounded-br-md px-4 py-2.5 max-w-[85%] leading-relaxed">
-              Theodore, give me a report on today&apos;s operations
-            </div>
-          </div>
-
-          {/* Delivered */}
-          <div className="text-right text-[10px] text-slate-500 -mt-1 pr-1">
-            Delivered
-          </div>
-
-          {/* Assistant message */}
-          <div className="flex justify-start">
-            <div className="bg-slate-800 text-slate-100 text-[13px] rounded-2xl rounded-bl-md px-4 py-3 max-w-[90%] leading-relaxed space-y-2">
-              <p className="font-semibold text-blue-400">BOTV Operations Report – Feb 9, 2026</p>
-
-              <p className="font-semibold text-sm">🔥 Sales</p>
-              <p>• 2 new paid clients signed today<br/>
-              • Setoudeh (pool + spa remodel)<br/>
-              • Sooy (decking, pergola, BBQ)</p>
-
-              <p className="font-semibold text-sm">✅ Loops Closed</p>
-              <p>• Leeming aerators — answered<br/>
-              • Viedma showerhead — arrived<br/>
-              • Jamil site visit scheduled Feb 17<br/>
-              • Arora car charger — APPROVED</p>
-
-              <p className="font-semibold text-sm">📋 Crew Status</p>
-              <p>• 23 of 25 crews active today<br/>
-              • 2 crews on weather hold<br/>
-              • All jobs on schedule ✓</p>
-            </div>
-          </div>
-
-          {/* User follow-up */}
-          <div className="flex justify-end">
-            <div className="bg-blue-500 text-white text-[13px] rounded-2xl rounded-br-md px-4 py-2.5 max-w-[85%] leading-relaxed">
-              Nice. Schedule a call with Setoudeh for Thursday at 2pm
-            </div>
-          </div>
-
-          {/* Assistant reply */}
-          <div className="flex justify-start">
-            <div className="bg-slate-800 text-slate-100 text-[13px] rounded-2xl rounded-bl-md px-4 py-2.5 max-w-[85%] leading-relaxed">
-              Done. ✅ Setoudeh confirmed for Thursday Feb 13 @ 2:00 PM. Calendar invite sent to both parties.
-            </div>
-          </div>
-        </div>
+        {/* Animated Messages */}
+        <AnimatedChat />
 
         {/* Input bar */}
-        <div className="bg-black px-3 py-2 border-t border-slate-800">
+        <div className="bg-black/90 px-3 py-2 border-t border-slate-800">
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-slate-800 rounded-full px-4 py-2 text-[13px] text-slate-500">
+            <div className="flex-1 bg-slate-800 rounded-full px-4 py-2 text-[12px] text-slate-500">
               Message Theodore...
             </div>
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+            <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+              <svg
+                className="w-3.5 h-3.5 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+                />
               </svg>
             </div>
           </div>
@@ -94,8 +249,28 @@ function PhoneMockup() {
 
         {/* Home indicator */}
         <div className="bg-black py-2 flex justify-center">
-          <div className="w-32 h-1 bg-slate-600 rounded-full" />
+          <div className="w-28 h-1 bg-slate-600 rounded-full" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function Badge({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/40 rounded-xl px-4 py-3 flex items-center gap-3">
+      <span className="text-2xl">{icon}</span>
+      <div>
+        <div className="text-white font-semibold text-sm">{value}</div>
+        <div className="text-slate-400 text-xs">{label}</div>
       </div>
     </div>
   );
@@ -103,11 +278,12 @@ function PhoneMockup() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto">
+      <nav className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto relative z-10">
         <div className="text-2xl font-bold tracking-tight">
-          <span className="text-blue-400">blue</span>go<span className="text-blue-400">.ai</span>
+          <span className="text-blue-400">blue</span>go
+          <span className="text-blue-400">.ai</span>
         </div>
         <Link
           href="#contact"
@@ -118,46 +294,82 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-16 pb-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Copy */}
-          <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              Your business deserves an
-              <span className="text-blue-400"> AI-powered operations team.</span>
-            </h1>
-            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-lg">
-              We deploy and manage intelligent AI assistants that handle your
-              communications, scheduling, lead generation, and day-to-day operations
-              — so you can focus on growing your business.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link
-                href="#contact"
-                className="rounded-full bg-blue-500 hover:bg-blue-400 px-8 py-3.5 text-base font-semibold transition-colors text-center"
-              >
-                Get Started
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="rounded-full border border-slate-600 hover:border-slate-400 px-8 py-3.5 text-base font-semibold transition-colors text-center"
-              >
-                How It Works
-              </Link>
-            </div>
-          </div>
+      <section className="relative max-w-4xl mx-auto px-6 pt-12 pb-8 text-center z-10">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+          Your AI-Powered
+          <br />
+          <span className="text-blue-400">Operations Team.</span>
+        </h1>
+        <p className="mt-5 text-base md:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
+          We deploy and manage intelligent AI assistants that handle
+          communications, scheduling, lead generation, and operations — so you
+          can focus on growing your business.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="#contact"
+            className="rounded-full bg-blue-500 hover:bg-blue-400 px-7 py-3 text-sm font-semibold transition-colors"
+          >
+            Get Started →
+          </Link>
+          <Link
+            href="#how-it-works"
+            className="rounded-full border border-slate-600 hover:border-slate-400 px-7 py-3 text-sm font-semibold transition-colors"
+          >
+            How It Works
+          </Link>
+        </div>
+      </section>
 
-          {/* Right: Floating Phone */}
-          <div className="flex justify-center md:justify-end">
-            <div className="animate-float">
-              <PhoneMockup />
-            </div>
+      {/* Phone + Badges + Glow */}
+      <section className="relative max-w-5xl mx-auto px-6 pt-8 pb-24">
+        {/* Background glow */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
+        </div>
+        <div className="absolute top-1/4 left-1/4 pointer-events-none">
+          <div className="w-[300px] h-[300px] bg-blue-400/5 rounded-full blur-[80px]" />
+        </div>
+        <div className="absolute top-1/3 right-1/4 pointer-events-none">
+          <div className="w-[250px] h-[250px] bg-indigo-500/8 rounded-full blur-[80px]" />
+        </div>
+
+        {/* Badges behind phone */}
+        <div className="relative z-0">
+          {/* Top left badge */}
+          <div className="absolute top-4 left-0 md:left-8 hidden md:block animate-float-slow">
+            <Badge icon="💬" label="Automated" value="24/7 Messaging" />
           </div>
+          {/* Top right badge */}
+          <div className="absolute top-4 right-0 md:right-8 hidden md:block animate-float-slow-reverse">
+            <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
+          </div>
+          {/* Mid left badge */}
+          <div className="absolute top-48 -left-4 md:left-0 hidden md:block animate-float-slow-reverse">
+            <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
+          </div>
+          {/* Mid right badge */}
+          <div className="absolute top-48 -right-4 md:right-0 hidden md:block animate-float-slow">
+            <Badge icon="⚙️" label="Crew Management" value="25+ Crews Tracked" />
+          </div>
+          {/* Bottom left */}
+          <div className="absolute bottom-16 left-4 md:left-16 hidden md:block animate-float-slow">
+            <Badge icon="📊" label="Real-time" value="Ops Reporting" />
+          </div>
+          {/* Bottom right */}
+          <div className="absolute bottom-16 right-4 md:right-16 hidden md:block animate-float-slow-reverse">
+            <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
+          </div>
+        </div>
+
+        {/* Phone with 3D tilt */}
+        <div className="relative z-10 flex justify-center phone-3d">
+          <PhoneMockup />
         </div>
       </section>
 
       {/* Social Proof Bar */}
-      <section className="border-y border-slate-800 py-8">
+      <section className="border-y border-slate-800 py-8 relative z-10">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <p className="text-sm text-slate-400 uppercase tracking-wider mb-2">
             Built by engineers from
@@ -169,7 +381,7 @@ export default function Home() {
       </section>
 
       {/* What We Automate */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
+      <section className="max-w-6xl mx-auto px-6 py-24 relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
           What We Automate
         </h2>
@@ -219,7 +431,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="bg-slate-800/30 py-24">
+      <section id="how-it-works" className="bg-slate-800/30 py-24 relative z-10">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
             How It Works
@@ -257,7 +469,10 @@ export default function Home() {
       </section>
 
       {/* CTA / Contact */}
-      <section id="contact" className="max-w-4xl mx-auto px-6 py-24 text-center">
+      <section
+        id="contact"
+        className="max-w-4xl mx-auto px-6 py-24 text-center relative z-10"
+      >
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
           Ready to put AI to work for your business?
         </h2>
@@ -274,14 +489,12 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8">
+      <footer className="border-t border-slate-800 py-8 relative z-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-slate-500">
             © 2026 bluego.ai — All rights reserved.
           </div>
-          <div className="text-sm text-slate-500">
-            Scottsdale, Arizona
-          </div>
+          <div className="text-sm text-slate-500">Scottsdale, Arizona</div>
         </div>
       </footer>
     </div>
