@@ -156,7 +156,7 @@ function AnimatedChat() {
   return (
     <div
       ref={chatRef}
-      className="bg-black/90 px-3 py-4 space-y-3 h-[420px] overflow-y-auto scrollbar-hide"
+      className="bg-black/90 px-3 py-3 space-y-2.5 h-[340px] md:h-[420px] overflow-y-auto scrollbar-hide"
     >
       {visibleMessages.map((msg, i) => (
         <div
@@ -201,7 +201,7 @@ function AnimatedChat() {
 
 function PhoneMockup() {
   return (
-    <div className="relative mx-auto w-[300px] md:w-[340px]">
+    <div className="relative mx-auto w-[260px] md:w-[340px]">
       {/* Phone frame */}
       <div className="rounded-[3rem] border-[8px] border-slate-700/80 bg-black shadow-2xl overflow-hidden">
         {/* Notch */}
@@ -280,48 +280,51 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto relative z-10">
+      <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto relative z-10">
         <div className="text-2xl font-bold tracking-tight">
           <span className="text-blue-400">blue</span>go
           <span className="text-blue-400">.ai</span>
         </div>
-        <Link
-          href="#contact"
-          className="rounded-full bg-blue-500 hover:bg-blue-400 px-5 py-2 text-sm font-semibold transition-colors"
-        >
-          Book a Call
-        </Link>
-      </nav>
-
-      {/* Hero */}
-      <section className="relative max-w-4xl mx-auto px-6 pt-6 pb-4 text-center z-10">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
-          Your AI-Powered
-          <span className="text-blue-400"> Operations Team.</span>
-        </h1>
-        <p className="mt-3 text-sm md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
-          We deploy and manage AI assistants that handle communications,
-          scheduling, lead generation, and operations — so you can focus on
-          growing your business.
-        </p>
-        <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex gap-3">
           <Link
             href="#contact"
-            className="rounded-full bg-blue-500 hover:bg-blue-400 px-7 py-3 text-sm font-semibold transition-colors"
+            className="rounded-full bg-blue-500 hover:bg-blue-400 px-5 py-2 text-sm font-semibold transition-colors"
           >
-            Get Started →
+            Get Started
           </Link>
           <Link
             href="#how-it-works"
-            className="rounded-full border border-slate-600 hover:border-slate-400 px-7 py-3 text-sm font-semibold transition-colors"
+            className="rounded-full border border-slate-600 hover:border-slate-400 px-5 py-2 text-sm font-semibold transition-colors hidden sm:inline-block"
           >
             How It Works
           </Link>
         </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="relative max-w-4xl mx-auto px-6 pt-2 md:pt-6 pb-2 text-center z-10">
+        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
+          Your AI-Powered
+          <span className="text-blue-400"> Operations Team.</span>
+        </h1>
+        <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
+          AI assistants that handle communications, scheduling, lead generation,
+          and operations — so you can focus on growing your business.
+        </p>
       </section>
 
       {/* Phone + Badges + Glow */}
-      <section className="relative max-w-5xl mx-auto px-6 pt-4 pb-20">
+      {/* Mobile badges - horizontal scroll */}
+      <section className="md:hidden px-4 pt-2 pb-3 z-10 relative">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
+          <Badge icon="💬" label="Real-time" value="Engagement" />
+          <Badge icon="📅" label="Scheduling" value="Zero Back & Forth" />
+          <Badge icon="📊" label="Real-time" value="Ops Reporting" />
+        </div>
+      </section>
+
+      <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-20">
         {/* Background glow */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
@@ -333,30 +336,24 @@ export default function Home() {
           <div className="w-[250px] h-[250px] bg-indigo-500/8 rounded-full blur-[80px]" />
         </div>
 
-        {/* Badges behind phone */}
-        <div className="relative z-0">
-          {/* Top left badge - Lead Gen (most compelling) */}
-          <div className="absolute top-4 left-0 md:left-8 hidden md:block animate-float-slow">
+        {/* Desktop badges behind phone - more spread out */}
+        <div className="relative z-0 hidden md:block">
+          <div className="absolute -top-2 left-0 lg:left-4 animate-float-slow">
             <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
           </div>
-          {/* Top right badge */}
-          <div className="absolute top-4 right-0 md:right-8 hidden md:block animate-float-slow-reverse">
+          <div className="absolute -top-2 right-0 lg:right-4 animate-float-slow-reverse">
             <Badge icon="💬" label="Real-time" value="Customer Engagement" />
           </div>
-          {/* Mid left badge */}
-          <div className="absolute top-48 -left-4 md:left-0 hidden md:block animate-float-slow-reverse">
+          <div className="absolute top-52 -left-8 lg:-left-4 animate-float-slow-reverse">
             <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
           </div>
-          {/* Mid right badge */}
-          <div className="absolute top-48 -right-4 md:right-0 hidden md:block animate-float-slow">
+          <div className="absolute top-52 -right-8 lg:-right-4 animate-float-slow">
             <Badge icon="💬" label="Automated" value="24/7 Messaging" />
           </div>
-          {/* Bottom left */}
-          <div className="absolute bottom-16 left-4 md:left-16 hidden md:block animate-float-slow">
+          <div className="absolute bottom-12 left-8 lg:left-16 animate-float-slow">
             <Badge icon="📊" label="Real-time" value="Ops Reporting" />
           </div>
-          {/* Bottom right */}
-          <div className="absolute bottom-16 right-4 md:right-16 hidden md:block animate-float-slow-reverse">
+          <div className="absolute bottom-12 right-8 lg:right-16 animate-float-slow-reverse">
             <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
           </div>
         </div>
