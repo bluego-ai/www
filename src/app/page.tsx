@@ -315,11 +315,11 @@ export default function Home() {
       <section className="relative max-w-4xl mx-auto px-6 pt-2 md:pt-6 pb-2 text-center z-10">
         <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
           Your AI-Powered
-          <span className="text-blue-400"> Operations Team.</span>
+          <span className="text-blue-400"> Sales &amp; Marketing Team.</span>
         </h1>
         <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
-          AI assistants that handle communications, scheduling, lead generation,
-          and operations — so you can focus on growing your business.
+          AI assistants that handle outreach, follow-ups, scheduling, and lead
+          generation — so you can focus on closing deals and growing your business.
         </p>
       </section>
 
@@ -415,19 +415,19 @@ export default function Home() {
               desc: "Proactive outreach, qualification, and pipeline management that runs while you sleep.",
             },
             {
-              icon: "⚙️",
-              title: "Operations",
-              desc: "Crew management, task tracking, and workflow automation tailored to your business.",
+              icon: "📧",
+              title: "Email & SMS Campaigns",
+              desc: "Personalized drip sequences, cold outreach, and nurture campaigns that convert — all on autopilot.",
             },
             {
               icon: "📊",
-              title: "Reporting & Insights",
-              desc: "Real-time dashboards and summaries so you always know what's happening across your business.",
+              title: "Pipeline & Analytics",
+              desc: "Real-time sales dashboards, conversion tracking, and campaign performance so you know what's working.",
             },
             {
               icon: "🔗",
-              title: "Integrations",
-              desc: "Connects with the tools you already use — CRMs, email, calendars, project management, and more.",
+              title: "CRM & Marketing Tools",
+              desc: "Connects with HubSpot, Salesforce, Mailchimp, Google Ads, and the tools you already use.",
             },
           ].map((item) => (
             <div
@@ -439,6 +439,91 @@ export default function Home() {
               <p className="text-slate-400 leading-relaxed">{item.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="max-w-5xl mx-auto px-6 py-24 relative z-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+          Simple, Transparent Pricing
+        </h2>
+        <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+          A fully managed AI assistant for your sales &amp; marketing — no hiring, no overhead.
+        </p>
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Standard Plan */}
+          <div className="bg-slate-800/50 border border-blue-500/30 rounded-2xl p-8 relative">
+            <div className="absolute -top-3 left-8 bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+              Most Popular
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Standard Plan</h3>
+            <div className="mb-6">
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-blue-400">$500</span>
+                <span className="text-slate-400">/week</span>
+              </div>
+              <p className="text-slate-400 text-sm mt-1">+ $800 one-time setup fee</p>
+            </div>
+            <ul className="space-y-3 mb-8">
+              {[
+                "Fully managed AI sales & marketing assistant",
+                "Email, SMS & chat automation",
+                "Lead generation & follow-up sequences",
+                "CRM integration & pipeline management",
+                "Smart scheduling & appointment booking",
+                "Weekly performance reports",
+                "Dedicated support & optimization",
+              ].map((feature) => (
+                <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-blue-400 mt-0.5">✓</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-slate-500 mb-6">
+              Usage-based fees may apply for AI tokens, phone numbers, and third-party API costs.
+            </p>
+            <Link
+              href="#contact"
+              className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-colors"
+            >
+              Get Started →
+            </Link>
+          </div>
+
+          {/* Custom Plan */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 flex flex-col">
+            <h3 className="text-2xl font-bold mb-2">Custom Plan</h3>
+            <div className="mb-6">
+              <span className="text-4xl font-bold text-slate-300">Let&apos;s Talk</span>
+            </div>
+            <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+              Need something more advanced? Multi-channel campaigns, custom integrations,
+              dedicated AI agents, or enterprise-scale automation — we&apos;ll build it for you.
+            </p>
+            <ul className="space-y-3 mb-8">
+              {[
+                "Everything in Standard",
+                "Custom AI agent development",
+                "Advanced integrations & workflows",
+                "Multi-channel campaign orchestration",
+                "Priority support & SLA",
+              ].map((feature) => (
+                <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-blue-400 mt-0.5">✓</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto">
+              <Link
+                href="#contact"
+                className="block text-center rounded-full border border-slate-600 hover:border-slate-400 px-6 py-3 text-sm font-semibold transition-colors"
+              >
+                Contact Us →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
