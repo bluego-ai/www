@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { Marquee } from "@/components/ui/marquee";
+import RotatingText from "@/components/RotatingText";
 
 interface Message {
   role: "user" | "assistant";
@@ -315,7 +316,7 @@ export default function Home() {
       <section className="relative max-w-4xl mx-auto px-6 pt-2 md:pt-6 pb-2 text-center z-10">
         <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
           Your AI-Powered
-          <span className="text-blue-400"> Sales &amp; Marketing Team.</span>
+          <RotatingText />
         </h1>
         <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
           AI assistants that handle outreach, follow-ups, scheduling, and lead
