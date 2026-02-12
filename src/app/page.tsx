@@ -317,6 +317,7 @@ export default function Home() {
         <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
           Your AI-Powered
           <RotatingText />
+          Team.
         </h1>
         <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
           AI assistants that handle outreach, follow-ups, scheduling, and lead

@@ -27,19 +27,15 @@ export default function RotatingText() {
   }, []);
 
   return (
-    <span className="text-blue-400">
-      {" "}
-      <span
-        className="inline-block transition-all duration-400 ease-in-out"
-        style={{
-          opacity: stage === "in" ? 1 : 0,
-          transform: stage === "in" ? "translateY(0)" : "translateY(-0.3em)",
-          filter: stage === "in" ? "blur(0px)" : "blur(4px)",
-        }}
-      >
-        {phrases[index]}
-      </span>{" "}
-      Team.
+    <span
+      className="block text-blue-400 transition-all duration-400 ease-in-out"
+      style={{
+        opacity: stage === "in" ? 1 : 0,
+        transform: stage === "in" ? "translateY(0)" : "translateY(-0.3em)",
+        filter: stage === "in" ? "blur(0px)" : "blur(4px)",
+      }}
+    >
+      {phrases[index]}
     </span>
   );
 }
