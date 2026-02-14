@@ -9,9 +9,9 @@ export const metadata: Metadata = {
   description:
     "AI assistants that handle outreach, follow-ups, scheduling, and lead generation — so you can focus on closing deals and growing your business.",
   openGraph: {
-    title: "bluego.ai — Every lead. Every follow-up. Every time.",
+    title: "bluego.ai — Every task. Every channel. Every time.",
     description:
-      "Your AI-Powered Sales & Marketing Team. We deploy and manage intelligent AI assistants for your business.",
+      "AI-Powered Operations for Your Business. We deploy and manage intelligent AI assistants that handle sales, support, scheduling, and operations.",
     images: [
       {
         url: "/og-image.png",
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "bluego.ai — Every lead. Every follow-up. Every time.",
+    title: "bluego.ai — Every task. Every channel. Every time.",
     description:
-      "Your AI-Powered Sales & Marketing Team.",
+      "AI-Powered Operations for Your Business.",
     images: ["/og-image.png"],
   },
 };
