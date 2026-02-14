@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useLayoutEffect } from "react";
 import RotatingText from "@/components/RotatingText";
 
 interface Message {
@@ -11,11 +11,11 @@ interface Message {
 
 type Category = "sales" | "support" | "scheduling" | "operations";
 
-const categories: { key: Category; label: string; headline: string }[] = [
-  { key: "sales", label: "Sales", headline: "Sales & Marketing Team" },
-  { key: "support", label: "Support", headline: "Customer Support Team" },
-  { key: "scheduling", label: "Scheduling", headline: "Scheduling Assistant" },
-  { key: "operations", label: "Operations", headline: "Operations Manager" },
+const categories: { key: Category; label: string; headline: string; icon: string }[] = [
+  { key: "sales", label: "Sales", headline: "Sales & Marketing Team", icon: "💬" },
+  { key: "support", label: "Support", headline: "Customer Support Team", icon: "🛡" },
+  { key: "scheduling", label: "Scheduling", headline: "Scheduling Assistant", icon: "📅" },
+  { key: "operations", label: "Operations", headline: "Operations Manager", icon: "⚙️" },
 ];
 
 const conversations: Record<Category, Message[]> = {
@@ -101,6 +101,38 @@ I can schedule all three. Want me to cluster them by location to save drive time
   ],
 };
 
+/* ───── Scroll reveal hook ───── */
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(".section-reveal");
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("revealed");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
+
+/* ───── Sticky nav hook ───── */
+function useStickyNav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handler, { passive: true });
+    handler();
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+  return scrolled;
+}
+
 function TypingIndicator() {
   return (
     <div className="flex justify-start">
@@ -140,11 +172,9 @@ function AnimatedChat({
   const [currentText, setCurrentText] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
   const cycleRef = useRef(0);
-  const cancelRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     let cancelled = false;
-    cancelRef.current = () => { cancelled = true; };
 
     async function sleep(ms: number) {
       return new Promise((r) => setTimeout(r, ms));
@@ -272,52 +302,55 @@ function PhoneMockup({
   onConversationEnd: () => void;
 }) {
   return (
-    <div className="relative mx-auto w-[260px] md:w-[340px]">
-      <div className="rounded-[3rem] border-[8px] border-slate-700/80 bg-black shadow-2xl overflow-hidden">
-        <div className="bg-black px-6 pt-2 pb-1 flex justify-center">
-          <div className="w-28 h-6 bg-black rounded-full border border-slate-800/50" />
-        </div>
-
-        <div className="bg-slate-900/95 backdrop-blur px-4 py-2.5 flex items-center gap-3 border-b border-slate-800">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">
-            🦬
+    <div className="relative mx-auto w-[260px] md:w-[340px] phone-reflection">
+      {/* Gradient border frame */}
+      <div className="rounded-[3rem] p-[2px] bg-gradient-to-b from-slate-500/50 via-slate-700/30 to-slate-500/50 shadow-2xl shadow-blue-500/10">
+        <div className="rounded-[2.85rem] bg-black overflow-hidden">
+          <div className="bg-black px-6 pt-2 pb-1 flex justify-center">
+            <div className="w-28 h-6 bg-black rounded-full border border-slate-800/50" />
           </div>
-          <div>
-            <div className="text-[13px] font-semibold text-white">Theodore</div>
-            <div className="text-[10px] text-green-400">Online</div>
-          </div>
-        </div>
 
-        <AnimatedChat
-          activeCategory={activeCategory}
-          onConversationEnd={onConversationEnd}
-        />
-
-        <div className="bg-black/90 px-3 py-2 border-t border-slate-800">
-          <div className="flex items-center gap-2">
-            <div className="flex-1 bg-slate-800 rounded-full px-4 py-2 text-[12px] text-slate-500">
-              Message Theodore...
+          <div className="bg-slate-900/95 backdrop-blur px-4 py-2.5 flex items-center gap-3 border-b border-slate-800">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">
+              🦬
             </div>
-            <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-3.5 h-3.5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
-                />
-              </svg>
+            <div>
+              <div className="text-[13px] font-semibold text-white">Theodore</div>
+              <div className="text-[10px] text-green-400">Online</div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-black py-2 flex justify-center">
-          <div className="w-28 h-1 bg-slate-600 rounded-full" />
+          <AnimatedChat
+            activeCategory={activeCategory}
+            onConversationEnd={onConversationEnd}
+          />
+
+          <div className="bg-black/90 px-3 py-2 border-t border-slate-800">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 bg-slate-800 rounded-full px-4 py-2 text-[12px] text-slate-500">
+                Message Theodore...
+              </div>
+              <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-3.5 h-3.5 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-black py-2 flex justify-center">
+            <div className="w-28 h-1 bg-slate-600 rounded-full" />
+          </div>
         </div>
       </div>
     </div>
@@ -331,27 +364,66 @@ function CategoryTabs({
   active: Category;
   onSelect: (c: Category) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+
+  const updateIndicator = useCallback(() => {
+    if (!containerRef.current) return;
+    const activeBtn = containerRef.current.querySelector(`[data-active="true"]`) as HTMLElement;
+    if (activeBtn) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+      setIndicator({
+        left: btnRect.left - containerRect.left,
+        width: btnRect.width,
+      });
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    updateIndicator();
+  }, [active, updateIndicator]);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [updateIndicator]);
+
   return (
-    <div className="flex justify-center gap-2 mt-6">
-      {categories.map((cat) => (
-        <button
-          key={cat.key}
-          onClick={() => onSelect(cat.key)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            active === cat.key
-              ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
-              : "bg-slate-800/70 text-slate-400 hover:text-slate-200 hover:bg-slate-700/70"
-          }`}
-        >
-          {cat.label}
-        </button>
-      ))}
+    <div className="flex justify-center mt-6">
+      <div
+        ref={containerRef}
+        className="relative inline-flex gap-1 p-1 rounded-2xl bg-slate-800/60 backdrop-blur-xl border border-slate-700/50"
+      >
+        {/* Sliding indicator */}
+        <div
+          className="absolute top-1 bottom-1 rounded-xl bg-gradient-to-r from-blue-500/90 to-blue-600/90 shadow-lg shadow-blue-500/25 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ left: indicator.left, width: indicator.width }}
+        />
+        {categories.map((cat) => (
+          <button
+            key={cat.key}
+            data-active={active === cat.key ? "true" : "false"}
+            onClick={() => onSelect(cat.key)}
+            className={`relative z-10 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-1.5 ${
+              active === cat.key
+                ? "text-white"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <span className="hidden sm:inline">{cat.icon}</span>
+            {cat.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<Category>("sales");
+  const scrolled = useStickyNav();
+  useScrollReveal();
 
   const handleConversationEnd = useCallback(() => {
     setActiveCategory((prev) => {
@@ -365,46 +437,55 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-white overflow-hidden noise-overlay">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto relative z-10">
-        <div className="text-2xl font-bold tracking-tight">
-          <span className="text-blue-400">blue</span>go
-          <span className="text-blue-400">.ai</span>
-        </div>
-        <div className="flex gap-3">
-          <Link
-            href="#contact"
-            className="rounded-full bg-blue-500 hover:bg-blue-400 px-5 py-2 text-sm font-semibold transition-colors"
-          >
-            Get Started
-          </Link>
-          <Link
-            href="#how-it-works"
-            className="rounded-full border border-slate-600 hover:border-slate-400 px-5 py-2 text-sm font-semibold transition-colors hidden sm:inline-block"
-          >
-            How It Works
-          </Link>
+      <nav className={`fixed top-0 left-0 right-0 z-50 nav-glass ${scrolled ? "scrolled" : ""}`}>
+        <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
+          <div className="text-2xl font-bold tracking-tight">
+            <span className="text-blue-400">blue</span>go
+            <span className="text-blue-400">.ai</span>
+          </div>
+          <div className="flex gap-3">
+            <Link
+              href="#contact"
+              className="rounded-full bg-blue-500 hover:bg-blue-400 px-5 py-2 text-sm font-semibold transition-colors shadow-lg shadow-blue-500/20"
+            >
+              Get Started
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="rounded-full border border-slate-600 hover:border-slate-400 px-5 py-2 text-sm font-semibold transition-colors hidden sm:inline-block"
+            >
+              How It Works
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative max-w-4xl mx-auto px-6 pt-2 md:pt-6 pb-2 text-center z-10">
-        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
+      <section className="relative max-w-4xl mx-auto px-6 pt-20 md:pt-24 pb-2 text-center z-10">
+        {/* Aurora background */}
+        <div className="absolute inset-0 -top-40 overflow-hidden pointer-events-none">
+          <div className="absolute w-[600px] h-[600px] top-0 left-1/4 bg-blue-500/8 rounded-full blur-[100px] animate-aurora" />
+          <div className="absolute w-[500px] h-[500px] top-10 right-1/4 bg-indigo-500/8 rounded-full blur-[100px] animate-aurora2" />
+          <div className="absolute w-[400px] h-[400px] top-20 left-1/2 -translate-x-1/2 bg-purple-500/5 rounded-full blur-[120px] animate-aurora" />
+        </div>
+
+        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight relative">
           Your AI-Powered
           <RotatingText />
         </h1>
-        <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
+        <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed relative">
           AI assistants that handle outreach, follow-ups, scheduling, and lead
           generation — so you can focus on closing deals and growing your business.
         </p>
       </section>
 
       {/* Phone + Glow */}
-      <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-20">
+      <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-24">
         {/* Background glow */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDuration: "4s" }} />
         </div>
         <div className="absolute top-1/4 left-1/4 pointer-events-none">
           <div className="w-[300px] h-[300px] bg-blue-400/5 rounded-full blur-[80px]" />
@@ -428,23 +509,27 @@ export default function Home() {
       </section>
 
       {/* Social Proof Bar */}
-      <section className="border-y border-slate-800 py-8 relative z-10">
+      <section className="border-y border-slate-800/60 py-8 relative z-10 section-reveal">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="text-sm text-slate-400 uppercase tracking-wider mb-2">
+          <p className="text-xs text-slate-500 uppercase tracking-[0.2em] mb-3">
             Built by engineers from
           </p>
-          <p className="text-slate-300 text-lg font-medium tracking-wide">
-            Stripe · Coinbase · Netflix · Uber · Anduril
-          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">
+            {["Stripe", "Coinbase", "Netflix", "Uber", "Anduril"].map((co) => (
+              <span key={co} className="text-slate-400 text-lg font-semibold tracking-wide opacity-60 hover:opacity-100 transition-opacity">
+                {co}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* What We Automate */}
       <section className="max-w-6xl mx-auto px-6 py-24 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 section-reveal">
           What We Automate
         </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {[
             {
               icon: "💬",
@@ -476,10 +561,11 @@ export default function Home() {
               title: "CRM & Marketing Tools",
               desc: "Connects with HubSpot, Salesforce, Mailchimp, Google Ads, and the tools you already use.",
             },
-          ].map((item) => (
+          ].map((item, idx) => (
             <div
               key={item.title}
-              className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 hover:border-blue-500/30 transition-colors"
+              className="glass-card rounded-2xl p-8 section-reveal"
+              style={{ transitionDelay: `${idx * 80}ms` }}
             >
               <div className="text-4xl mb-4">{item.icon}</div>
               <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
@@ -491,15 +577,15 @@ export default function Home() {
 
       {/* Pricing */}
       <section id="pricing" className="max-w-5xl mx-auto px-6 py-24 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 section-reveal">
           Simple, Transparent Pricing
         </h2>
-        <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto">
+        <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto section-reveal">
           A fully managed AI assistant for your sales &amp; marketing — no hiring, no overhead.
         </p>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="bg-slate-800/50 border border-blue-500/30 rounded-2xl p-8 relative">
-            <div className="absolute -top-3 left-8 bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+          <div className="glass-card rounded-2xl p-8 relative shimmer-border section-reveal">
+            <div className="absolute -top-3 left-8 bg-gradient-to-r from-blue-500 to-blue-400 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg shadow-blue-500/30">
               Most Popular
             </div>
             <h3 className="text-2xl font-bold mb-2">Standard Plan</h3>
@@ -531,13 +617,13 @@ export default function Home() {
             </p>
             <Link
               href="#contact"
-              className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-colors"
+              className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
             >
               Get Started →
             </Link>
           </div>
 
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 flex flex-col">
+          <div className="glass-card rounded-2xl p-8 flex flex-col section-reveal" style={{ transitionDelay: "100ms" }}>
             <h3 className="text-2xl font-bold mb-2">Custom Plan</h3>
             <div className="mb-6">
               <span className="text-4xl font-bold text-slate-300">Let&apos;s Talk</span>
@@ -563,7 +649,7 @@ export default function Home() {
             <div className="mt-auto">
               <Link
                 href="#contact"
-                className="block text-center rounded-full border border-slate-600 hover:border-slate-400 px-6 py-3 text-sm font-semibold transition-colors"
+                className="block text-center rounded-full border border-slate-600 hover:border-blue-400/50 px-6 py-3 text-sm font-semibold transition-all hover:shadow-lg hover:shadow-blue-500/10"
               >
                 Contact Us →
               </Link>
@@ -573,39 +659,41 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="bg-slate-800/30 py-24 relative z-10">
+      <section id="how-it-works" className="bg-slate-800/20 py-24 relative z-10">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 section-reveal">
             How It Works
           </h2>
-          <div className="space-y-12">
-            {[
-              {
-                step: "01",
-                title: "Discovery Call",
-                desc: "We learn about your business, workflows, and pain points. 30 minutes is all we need.",
-              },
-              {
-                step: "02",
-                title: "Custom Deployment",
-                desc: "We build and deploy an AI assistant tailored to your specific operations and integrations.",
-              },
-              {
-                step: "03",
-                title: "Managed & Optimized",
-                desc: "We continuously manage, monitor, and improve your AI assistant. You focus on your business — we handle the tech.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="flex gap-6 items-start">
-                <div className="text-blue-400 text-4xl font-bold font-mono shrink-0">
-                  {item.step}
+          <div className="relative timeline-line">
+            <div className="space-y-12">
+              {[
+                {
+                  step: "01",
+                  title: "Discovery Call",
+                  desc: "We learn about your business, workflows, and pain points. 30 minutes is all we need.",
+                },
+                {
+                  step: "02",
+                  title: "Custom Deployment",
+                  desc: "We build and deploy an AI assistant tailored to your specific operations and integrations.",
+                },
+                {
+                  step: "03",
+                  title: "Managed & Optimized",
+                  desc: "We continuously manage, monitor, and improve your AI assistant. You focus on your business — we handle the tech.",
+                },
+              ].map((item, idx) => (
+                <div key={item.step} className="flex gap-6 items-start section-reveal" style={{ transitionDelay: `${idx * 120}ms` }}>
+                  <div className="relative z-10 w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold font-mono shadow-lg shadow-blue-500/25">
+                    {item.step}
+                  </div>
+                  <div className="pt-2">
+                    <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                    <p className="text-slate-400 leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                  <p className="text-slate-400 leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -613,8 +701,14 @@ export default function Home() {
       {/* CTA / Contact */}
       <section
         id="contact"
-        className="max-w-4xl mx-auto px-6 py-24 text-center relative z-10"
+        className="relative max-w-4xl mx-auto px-6 py-24 text-center z-10 section-reveal"
       >
+        {/* Animated gradient bg */}
+        <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl mx-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-purple-500/5 animate-gradient-shift" />
+          <div className="absolute w-[400px] h-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500/8 rounded-full blur-[100px] animate-aurora" />
+        </div>
+
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
           Ready to put AI to work for your business?
         </h2>
@@ -624,14 +718,14 @@ export default function Home() {
         </p>
         <Link
           href="https://calendly.com"
-          className="inline-block rounded-full bg-blue-500 hover:bg-blue-400 px-10 py-4 text-lg font-semibold transition-colors"
+          className="inline-block rounded-full bg-blue-500 hover:bg-blue-400 px-10 py-4 text-lg font-semibold transition-all shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02]"
         >
           Book Your Free Call →
         </Link>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 relative z-10">
+      <footer className="border-t border-slate-800/60 py-8 relative z-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-slate-500">
             © 2026 bluego.ai — All rights reserved.
