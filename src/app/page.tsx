@@ -1,20 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
-import { Marquee } from "@/components/ui/marquee";
-import RotatingText from "@/components/RotatingText";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 interface Message {
   role: "user" | "assistant";
   text: string;
 }
 
-const conversation: Message[] = [
-  { role: "user", text: "Theodore, give me a report on today's operations" },
-  {
-    role: "assistant",
-    text: `**BOTV Operations Report – Feb 9, 2026**
+type Category = "sales" | "support" | "scheduling" | "operations";
+
+const categories: { key: Category; label: string; headline: string }[] = [
+  { key: "sales", label: "Sales", headline: "Sales & Marketing Team" },
+  { key: "support", label: "Support", headline: "Customer Support Team" },
+  { key: "scheduling", label: "Scheduling", headline: "Scheduling Assistant" },
+  { key: "operations", label: "Operations", headline: "Operations Manager" },
+];
+
+const conversations: Record<Category, Message[]> = {
+  sales: [
+    { role: "user", text: "Hey Theodore, any new leads come in today?" },
+    {
+      role: "assistant",
+      text: `Yes! 3 new qualified leads today:
+
+🔥 **Mike Chen** — pool & outdoor kitchen remodel, $45K budget
+🔥 **Sarah Walsh** — full backyard renovation, requesting quote
+🔥 **DreamScape Builders** — wants to discuss partnership
+
+Mike is the hottest — he filled out the form 20 min ago and has a project start date of March 1.`,
+    },
+    { role: "user", text: "Nice. Send Mike a follow-up and get him on a call this week" },
+    {
+      role: "assistant",
+      text: "Done ✅ Sent Mike a personalized follow-up email with your availability. He's got slots for Wednesday 10am or Thursday 2pm. I'll confirm as soon as he picks one.",
+    },
+  ],
+  support: [
+    { role: "user", text: "Theodore, did we get any complaints today?" },
+    {
+      role: "assistant",
+      text: `One issue flagged:
+
+⚠️ **Janet Reeves** — upset about delayed tile delivery for her bathroom remodel. Shipment was supposed to arrive Monday, still hasn't shown.
+
+I already contacted the supplier — it's arriving tomorrow by noon. Want me to reach out to Janet?`,
+    },
+    { role: "user", text: "Yeah, apologize and offer a small discount for the trouble" },
+    {
+      role: "assistant",
+      text: "Done ✅ Sent Janet a personal apology with a 10% discount on her next service. Also confirmed the delivery for tomorrow with a tracking link. She replied \"Thank you, I appreciate it!\"",
+    },
+  ],
+  scheduling: [
+    { role: "user", text: "Theodore, I need to set up site visits for this week" },
+    {
+      role: "assistant",
+      text: `Here's what I've got queued up:
+
+📅 **Jamil property** — needs site visit before permit filing
+📅 **Setoudeh** — pool dimensions need measuring
+📅 **Arora** — final walkthrough before project close
+
+I can schedule all three. Want me to cluster them by location to save drive time?`,
+    },
+    { role: "user", text: "Yes, do that. Morning slots preferred" },
+    {
+      role: "assistant",
+      text: "Done ✅ All three booked:\n\n• Tue 9:00 AM — Arora (Scottsdale)\n• Tue 10:30 AM — Setoudeh (Scottsdale)\n• Tue 1:00 PM — Jamil (Mesa)\n\nCalendar invites sent to everyone. Driving directions queued for Tuesday morning.",
+    },
+  ],
+  operations: [
+    { role: "user", text: "Theodore, give me a report on today's operations" },
+    {
+      role: "assistant",
+      text: `**BOTV Operations Report – Feb 14, 2026**
 
 🔥 **Sales (Big Day!)**
 • 2 new paid clients signed
@@ -31,16 +91,14 @@ const conversation: Message[] = [
 • 23 of 25 crews active today
 • 2 crews on weather hold
 • All jobs on schedule ✓`,
-  },
-  {
-    role: "user",
-    text: "Nice. Schedule a call with Setoudeh for Thursday at 2pm",
-  },
-  {
-    role: "assistant",
-    text: "Done. ✅ Setoudeh confirmed for Thursday Feb 13 @ 2:00 PM. Calendar invite sent to both parties.",
-  },
-];
+    },
+    { role: "user", text: "Nice. Schedule a call with Setoudeh for Thursday at 2pm" },
+    {
+      role: "assistant",
+      text: "Done ✅ Setoudeh confirmed for Thursday Feb 19 @ 2:00 PM. Calendar invite sent to both parties.",
+    },
+  ],
+};
 
 function TypingIndicator() {
   return (
@@ -55,7 +113,6 @@ function TypingIndicator() {
 }
 
 function formatMessage(text: string) {
-  // Bold **text**
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
@@ -69,16 +126,24 @@ function formatMessage(text: string) {
   });
 }
 
-function AnimatedChat() {
+function AnimatedChat({
+  activeCategory,
+  onConversationEnd,
+}: {
+  activeCategory: Category;
+  onConversationEnd: () => void;
+}) {
   const [visibleMessages, setVisibleMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [typingRole, setTypingRole] = useState<"user" | "assistant">("user");
   const [currentText, setCurrentText] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
   const cycleRef = useRef(0);
+  const cancelRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     let cancelled = false;
+    cancelRef.current = () => { cancelled = true; };
 
     async function sleep(ms: number) {
       return new Promise((r) => setTimeout(r, ms));
@@ -89,56 +154,56 @@ function AnimatedChat() {
       setTypingRole(msg.role);
       setIsTyping(true);
 
-      // Typing indicator duration
-      const typingDelay = msg.role === "assistant" ? 1500 : 800;
+      const typingDelay = msg.role === "assistant" ? 2000 : 1200;
       await sleep(typingDelay);
       if (cancelled) return;
 
       setIsTyping(false);
 
-      // Character-by-character typing for user, chunk for assistant
       if (msg.role === "user") {
         for (let i = 0; i <= msg.text.length; i++) {
           if (cancelled) return;
           setCurrentText(msg.text.slice(0, i));
-          await sleep(30);
+          await sleep(35);
         }
-        await sleep(200);
+        await sleep(300);
         setCurrentText("");
         setVisibleMessages((prev) => [...prev, msg]);
       } else {
-        // Assistant types in chunks (lines)
         const lines = msg.text.split("\n");
         let accumulated = "";
         for (let i = 0; i < lines.length; i++) {
           if (cancelled) return;
           accumulated += (i > 0 ? "\n" : "") + lines[i];
           setCurrentText(accumulated);
-          await sleep(80);
+          await sleep(100);
         }
-        await sleep(300);
+        await sleep(400);
         setCurrentText("");
         setVisibleMessages((prev) => [...prev, msg]);
       }
 
-      await sleep(500);
+      await sleep(1500);
     }
 
     async function runConversation() {
-      while (!cancelled) {
-        setVisibleMessages([]);
-        setCurrentText("");
-        setIsTyping(false);
-        await sleep(1500);
+      setVisibleMessages([]);
+      setCurrentText("");
+      setIsTyping(false);
+      cycleRef.current++;
+      await sleep(800);
 
-        for (const msg of conversation) {
-          if (cancelled) return;
-          await typeMessage(msg);
+      const msgs = conversations[activeCategory];
+      for (const msg of msgs) {
+        if (cancelled) return;
+        await typeMessage(msg);
+      }
+
+      if (!cancelled) {
+        await sleep(3000);
+        if (!cancelled) {
+          onConversationEnd();
         }
-
-        // Pause before restarting
-        await sleep(4000);
-        cycleRef.current++;
       }
     }
 
@@ -146,9 +211,8 @@ function AnimatedChat() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [activeCategory, onConversationEnd]);
 
-  // Auto-scroll
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -177,7 +241,6 @@ function AnimatedChat() {
         </div>
       ))}
 
-      {/* Currently typing text */}
       {currentText && !isTyping && (
         <div
           className={`flex ${typingRole === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
@@ -195,23 +258,25 @@ function AnimatedChat() {
         </div>
       )}
 
-      {/* Typing indicator */}
       {isTyping && <TypingIndicator />}
     </div>
   );
 }
 
-function PhoneMockup() {
+function PhoneMockup({
+  activeCategory,
+  onConversationEnd,
+}: {
+  activeCategory: Category;
+  onConversationEnd: () => void;
+}) {
   return (
     <div className="relative mx-auto w-[260px] md:w-[340px]">
-      {/* Phone frame */}
       <div className="rounded-[3rem] border-[8px] border-slate-700/80 bg-black shadow-2xl overflow-hidden">
-        {/* Notch */}
         <div className="bg-black px-6 pt-2 pb-1 flex justify-center">
           <div className="w-28 h-6 bg-black rounded-full border border-slate-800/50" />
         </div>
 
-        {/* Chat header */}
         <div className="bg-slate-900/95 backdrop-blur px-4 py-2.5 flex items-center gap-3 border-b border-slate-800">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">
             🦬
@@ -222,10 +287,11 @@ function PhoneMockup() {
           </div>
         </div>
 
-        {/* Animated Messages */}
-        <AnimatedChat />
+        <AnimatedChat
+          activeCategory={activeCategory}
+          onConversationEnd={onConversationEnd}
+        />
 
-        {/* Input bar */}
         <div className="bg-black/90 px-3 py-2 border-t border-slate-800">
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-slate-800 rounded-full px-4 py-2 text-[12px] text-slate-500">
@@ -249,7 +315,6 @@ function PhoneMockup() {
           </div>
         </div>
 
-        {/* Home indicator */}
         <div className="bg-black py-2 flex justify-center">
           <div className="w-28 h-1 bg-slate-600 rounded-full" />
         </div>
@@ -258,36 +323,49 @@ function PhoneMockup() {
   );
 }
 
-function BadgePill({ icon, text }: { icon: string; text: string }) {
-  return (
-    <div className="flex items-center gap-2 bg-slate-800/70 border border-slate-700/40 rounded-full px-4 py-2 shrink-0">
-      <span className="text-base">{icon}</span>
-      <span className="text-white text-xs font-medium whitespace-nowrap">{text}</span>
-    </div>
-  );
-}
-
-function Badge({
-  icon,
-  label,
-  value,
+function CategoryTabs({
+  active,
+  onSelect,
 }: {
-  icon: string;
-  label: string;
-  value: string;
+  active: Category;
+  onSelect: (c: Category) => void;
 }) {
   return (
-    <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/40 rounded-xl px-4 py-3 flex items-center gap-3">
-      <span className="text-2xl">{icon}</span>
-      <div>
-        <div className="text-white font-semibold text-sm">{value}</div>
-        <div className="text-slate-400 text-xs">{label}</div>
-      </div>
+    <div className="flex justify-center gap-2 mt-6">
+      {categories.map((cat) => (
+        <button
+          key={cat.key}
+          onClick={() => onSelect(cat.key)}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            active === cat.key
+              ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
+              : "bg-slate-800/70 text-slate-400 hover:text-slate-200 hover:bg-slate-700/70"
+          }`}
+        >
+          {cat.label}
+        </button>
+      ))}
     </div>
   );
 }
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState<Category>("sales");
+
+  const handleConversationEnd = useCallback(() => {
+    setActiveCategory((prev) => {
+      const idx = categories.findIndex((c) => c.key === prev);
+      return categories[(idx + 1) % categories.length].key;
+    });
+  }, []);
+
+  const handleTabSelect = useCallback((cat: Category) => {
+    setActiveCategory(cat);
+  }, []);
+
+  const activeHeadline =
+    categories.find((c) => c.key === activeCategory)?.headline ?? "Sales & Marketing Team";
+
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
       {/* Nav */}
@@ -316,8 +394,7 @@ export default function Home() {
       <section className="relative max-w-4xl mx-auto px-6 pt-2 md:pt-6 pb-2 text-center z-10">
         <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
           Your AI-Powered
-          <RotatingText />
-          Team.
+          <span className="text-blue-400"> {activeHeadline}</span>
         </h1>
         <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed">
           AI assistants that handle outreach, follow-ups, scheduling, and lead
@@ -325,23 +402,7 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Phone + Badges + Glow */}
-      {/* Mobile badges - marquee */}
-      <section className="md:hidden pt-2 pb-2 z-10 relative">
-        <div className="relative">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-slate-950 to-transparent z-10" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-slate-950 to-transparent z-10" />
-          <Marquee className="[--duration:25s]" pauseOnHover>
-            <BadgePill icon="🎯" text="Lead Generation" />
-            <BadgePill icon="💬" text="Customer Engagement" />
-            <BadgePill icon="📅" text="Smart Scheduling" />
-            <BadgePill icon="📊" text="Ops Reporting" />
-            <BadgePill icon="🔗" text="CRM Integrations" />
-            <BadgePill icon="💬" text="24/7 Messaging" />
-          </Marquee>
-        </div>
-      </section>
-
+      {/* Phone + Glow */}
       <section className="relative max-w-5xl mx-auto px-6 pt-2 md:pt-4 pb-16 md:pb-20">
         {/* Background glow */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -354,31 +415,17 @@ export default function Home() {
           <div className="w-[250px] h-[250px] bg-indigo-500/8 rounded-full blur-[80px]" />
         </div>
 
-        {/* Phone with 3D tilt */}
+        {/* Phone */}
         <div className="relative z-10 flex justify-center phone-3d">
-          <PhoneMockup />
+          <PhoneMockup
+            activeCategory={activeCategory}
+            onConversationEnd={handleConversationEnd}
+          />
+        </div>
 
-          {/* Desktop badges - positioned around the phone */}
-          <div className="absolute inset-0 hidden md:block pointer-events-none">
-            <div className="absolute top-8 -left-4 lg:-left-6 animate-float-slow pointer-events-auto">
-              <Badge icon="🎯" label="Pipeline Growth" value="Lead Generation" />
-            </div>
-            <div className="absolute top-8 -right-4 lg:-right-6 animate-float-slow-reverse pointer-events-auto">
-              <Badge icon="💬" label="Real-time" value="Customer Engagement" />
-            </div>
-            <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-6 animate-float-slow-reverse pointer-events-auto">
-              <Badge icon="📅" label="Smart Scheduling" value="Zero Back & Forth" />
-            </div>
-            <div className="absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-6 animate-float-slow pointer-events-auto">
-              <Badge icon="💬" label="Automated" value="24/7 Messaging" />
-            </div>
-            <div className="absolute bottom-8 -left-4 lg:-left-6 animate-float-slow pointer-events-auto">
-              <Badge icon="📊" label="Real-time" value="Ops Reporting" />
-            </div>
-            <div className="absolute bottom-8 -right-4 lg:-right-6 animate-float-slow-reverse pointer-events-auto">
-              <Badge icon="🔗" label="Your Tools" value="CRM Integrations" />
-            </div>
-          </div>
+        {/* Category Tabs */}
+        <div className="relative z-10">
+          <CategoryTabs active={activeCategory} onSelect={handleTabSelect} />
         </div>
       </section>
 
@@ -453,7 +500,6 @@ export default function Home() {
           A fully managed AI assistant for your sales &amp; marketing — no hiring, no overhead.
         </p>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Standard Plan */}
           <div className="bg-slate-800/50 border border-blue-500/30 rounded-2xl p-8 relative">
             <div className="absolute -top-3 left-8 bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
               Most Popular
@@ -493,7 +539,6 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Custom Plan */}
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 flex flex-col">
             <h3 className="text-2xl font-bold mb-2">Custom Plan</h3>
             <div className="mb-6">
