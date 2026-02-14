@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    background: #0a0e1a;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Aurora glow effects */
+  .glow1 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    border-radius: 50%;
+  }
+  .glow2 {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%);
+    bottom: -200px;
+    right: -100px;
+    border-radius: 50%;
+  }
+  .glow3 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 60px 70px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    max-width: 580px;
+  }
+
+  .brand {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .brand .blue { color: #60a5fa; }
+  .brand .white { color: #fff; }
+
+  .tagline {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    color: #fff;
+  }
+  .tagline .highlight {
+    color: #60a5fa;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  /* Phone mockup */
+  .right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .phone {
+    width: 240px;
+    height: 480px;
+    border-radius: 36px;
+    border: 6px solid rgba(100,116,139,0.5);
+    background: #000;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 60px rgba(59,130,246,0.15), 0 25px 50px rgba(0,0,0,0.5);
+  }
+
+  .phone-notch {
+    width: 80px;
+    height: 22px;
+    background: #000;
+    border-radius: 0 0 14px 14px;
+    margin: 0 auto;
+    border: 1px solid rgba(100,116,139,0.2);
+    border-top: none;
+  }
+
+  .phone-header {
+    background: rgba(15,23,42,0.95);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .header-text .name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .header-text .status {
+    font-size: 9px;
+    color: #4ade80;
+  }
+
+  .phone-chat {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .msg {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    background: #3b82f6;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.assistant {
+    align-self: flex-start;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg .bold { color: #60a5fa; font-weight: 600; }
+
+  .phone-input {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .phone-input .field {
+    flex: 1;
+    background: #1e293b;
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 10px;
+    color: #64748b;
+  }
+
+  .phone-input .send {
+    width: 24px;
+    height: 24px;
+    background: #3b82f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-input .send svg { width: 12px; height: 12px; }
+
+  .phone-home {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: #475569;
+    border-radius: 2px;
+  }
+
+  /* Noise texture */
+  .noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="glow3"></div>
+  <div class="noise"></div>
+
+  <div class="container">
+    <div class="left">
+      <div class="brand">
+        <span class="blue">blue</span><span class="white">go</span><span class="blue">.ai</span>
+      </div>
+      <div class="tagline">
+        Every lead.<br>
+        Every follow-up.<br>
+        <span class="highlight">Every time.</span>
+      </div>
+      <div class="subtitle">Your AI-Powered Sales &amp; Marketing Team</div>
+    </div>
+
+    <div class="right">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-header">
+          <div class="avatar">🦬</div>
+          <div class="header-text">
+            <div class="name">Theodore</div>
+            <div class="status">Online</div>
+          </div>
+        </div>
+        <div class="phone-chat">
+          <div class="msg user">Any new leads today?</div>
+          <div class="msg assistant">
+            3 new qualified leads:<br><br>
+            🔥 <span class="bold">Mike Chen</span> — $45K remodel<br>
+            🔥 <span class="bold">Sarah Walsh</span> — requesting quote<br><br>
+            Mike is hottest — filled out the form 20 min ago.
+          </div>
+          <div class="msg user">Send Mike a follow-up</div>
+          <div class="msg assistant">
+            Done ✅ Personalized follow-up sent. He's got slots for Wed 10am or Thu 2pm.
+          </div>
+        </div>
+        <div class="phone-input">
+          <div class="field">Message Theodore...</div>
+          <div class="send">
+            <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
+            </svg>
+          </div>
+        </div>
+        <div class="phone-home"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

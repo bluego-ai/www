@@ -5,9 +5,31 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "bluego.ai — AI-Powered Operations for Your Business",
+  title: "bluego.ai — AI-Powered Sales & Marketing Team",
   description:
-    "We deploy and manage intelligent AI assistants that handle communications, scheduling, lead generation, and operations for your business.",
+    "AI assistants that handle outreach, follow-ups, scheduling, and lead generation — so you can focus on closing deals and growing your business.",
+  openGraph: {
+    title: "bluego.ai — Every lead. Every follow-up. Every time.",
+    description:
+      "Your AI-Powered Sales & Marketing Team. We deploy and manage intelligent AI assistants for your business.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "bluego.ai — AI-Powered Sales & Marketing Team",
+      },
+    ],
+    siteName: "bluego.ai",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "bluego.ai — Every lead. Every follow-up. Every time.",
+    description:
+      "Your AI-Powered Sales & Marketing Team.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
