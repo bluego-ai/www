@@ -476,8 +476,7 @@ export default function Home() {
           <RotatingText />
         </h1>
         <p className="mt-2 md:mt-3 text-xs md:text-base text-slate-300 max-w-lg mx-auto leading-relaxed relative">
-          AI assistants that handle outreach, follow-ups, scheduling, and lead
-          generation — so you can focus on closing deals and growing your business.
+          AI employees that handle communications, follow-ups, scheduling, and operations — so you can focus on what you do best.
         </p>
       </section>
 
@@ -534,32 +533,32 @@ export default function Home() {
             {
               icon: "💬",
               title: "Communications",
-              desc: "Automated responses, follow-ups, and client messaging across email, SMS, and chat — 24/7.",
+              desc: "Responds to clients, crews, and vendors across text, email, and chat — accurately, instantly, 24/7.",
             },
             {
               icon: "📅",
-              title: "Scheduling & Coordination",
-              desc: "Smart calendar management, appointment booking, and team coordination without the back-and-forth.",
+              title: "Scheduling & Dispatch",
+              desc: "Books appointments, coordinates teams, and manages calendars without the back-and-forth.",
             },
             {
               icon: "🎯",
-              title: "Lead Generation",
-              desc: "Proactive outreach, qualification, and pipeline management that runs while you sleep.",
+              title: "Sales & Lead Follow-Up",
+              desc: "Responds to every lead instantly, qualifies prospects, and books calls — even at 11pm on a Saturday.",
             },
             {
-              icon: "📧",
-              title: "Email & SMS Campaigns",
-              desc: "Personalized drip sequences, cold outreach, and nurture campaigns that convert — all on autopilot.",
+              icon: "🛡",
+              title: "Customer Support",
+              desc: "Handles client questions, project updates, and issue resolution with full context of their history.",
             },
             {
-              icon: "📊",
-              title: "Pipeline & Analytics",
-              desc: "Real-time sales dashboards, conversion tracking, and campaign performance so you know what's working.",
+              icon: "📞",
+              title: "Phone & Voice",
+              desc: "Answers inbound calls, makes outbound follow-ups, and never sends another customer to voicemail.",
             },
             {
               icon: "🔗",
-              title: "CRM & Marketing Tools",
-              desc: "Connects with HubSpot, Salesforce, Mailchimp, Google Ads, and the tools you already use.",
+              title: "Your Tools, Connected",
+              desc: "Integrates with your CRM, project management, invoicing, and the platforms you already run your business on.",
             },
           ].map((item, idx) => (
             <div
@@ -581,7 +580,7 @@ export default function Home() {
           Simple, Transparent Pricing
         </h2>
         <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto section-reveal">
-          A fully managed AI assistant for your sales &amp; marketing — no hiring, no overhead.
+          A fully managed AI employee for your business — no hiring, no overhead, no babysitting.
         </p>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <div className="glass-card rounded-2xl p-8 relative shimmer-border section-reveal">
@@ -594,17 +593,17 @@ export default function Home() {
                 <span className="text-4xl font-bold text-blue-400">$500</span>
                 <span className="text-slate-400">/week</span>
               </div>
-              <p className="text-slate-400 text-sm mt-1">+ $800 one-time setup fee</p>
+              <p className="text-slate-400 text-sm mt-1">+ $1,500 one-time setup fee</p>
             </div>
             <ul className="space-y-3 mb-8">
               {[
-                "Fully managed AI sales & marketing assistant",
-                "Email, SMS & chat automation",
-                "Lead generation & follow-up sequences",
-                "CRM integration & pipeline management",
-                "Smart scheduling & appointment booking",
-                "Weekly performance reports",
-                "Dedicated support & optimization",
+                "Fully managed AI employee for your business",
+                "Text, email, phone & chat — all channels covered",
+                "Sales follow-up & lead response",
+                "Customer support & client communications",
+                "Scheduling, dispatch & coordination",
+                "Integrates with your CRM, tools & APIs",
+                "Dedicated support & continuous optimization",
               ].map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
                   <span className="text-blue-400 mt-0.5">✓</span>
@@ -629,15 +628,15 @@ export default function Home() {
               <span className="text-4xl font-bold text-slate-300">Let&apos;s Talk</span>
             </div>
             <p className="text-slate-400 text-sm mb-6 leading-relaxed">
-              Need something more advanced? Multi-channel campaigns, custom integrations,
-              dedicated AI agents, or enterprise-scale automation — we&apos;ll build it for you.
+              Need something more advanced? Multiple AI employees, custom integrations,
+              dedicated workflows, or enterprise-scale automation — we&apos;ll build it for you.
             </p>
             <ul className="space-y-3 mb-8">
               {[
                 "Everything in Standard",
-                "Custom AI agent development",
-                "Advanced integrations & workflows",
-                "Multi-channel campaign orchestration",
+                "Multiple AI employees across departments",
+                "Advanced integrations & custom workflows",
+                "Voice calls, API connections & more",
                 "Priority support & SLA",
               ].map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
@@ -674,13 +673,13 @@ export default function Home() {
                 },
                 {
                   step: "02",
-                  title: "Custom Deployment",
-                  desc: "We build and deploy an AI assistant tailored to your specific operations and integrations.",
+                  title: "Custom Build & Integration",
+                  desc: "We build your AI employee — trained on your business, your tone, your rules — and plug it into the tools you already use.",
                 },
                 {
                   step: "03",
-                  title: "Managed & Optimized",
-                  desc: "We continuously manage, monitor, and improve your AI assistant. You focus on your business — we handle the tech.",
+                  title: "Managed Forever",
+                  desc: "We continuously manage, monitor, and improve your AI employee. Your business changes, we adapt. You focus on the work — we handle the tech.",
                 },
               ].map((item, idx) => (
                 <div key={item.step} className="flex gap-6 items-start section-reveal" style={{ transitionDelay: `${idx * 120}ms` }}>
@@ -710,11 +709,10 @@ export default function Home() {
         </div>
 
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
-          Ready to put AI to work for your business?
+          Ready to hire an AI employee?
         </h2>
         <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
-          Book a free discovery call. We&apos;ll show you exactly how an AI
-          assistant can save you hours every week.
+          Book a free 30-minute call. Tell us where the chaos is — we&apos;ll show you exactly how an AI employee can handle it.
         </p>
         <Link
           href="https://calendly.com"
