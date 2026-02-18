@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/lib/db/migrate.ts",
+    "db:seed": "tsx src/lib/db/seed-messages.ts",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "check-types": "tsc --noEmit"
   },
