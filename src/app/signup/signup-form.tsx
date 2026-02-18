@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { authenticate } from "./actions";
+import { signup } from "./actions";
 import Link from "next/link";
 
 function SubmitButton() {
@@ -13,13 +13,13 @@ function SubmitButton() {
       disabled={pending}
       className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 transition-colors cursor-pointer"
     >
-      {pending ? "Signing in…" : "Sign in"}
+      {pending ? "Creating account…" : "Create account"}
     </button>
   );
 }
 
-export function LoginForm() {
-  const [error, formAction] = useActionState(authenticate, undefined);
+export function SignupForm() {
+  const [error, formAction] = useActionState(signup, undefined);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -28,6 +28,19 @@ export function LoginForm() {
           {error}
         </div>
       )}
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1.5">
+          Name
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="Your name"
+        />
+      </div>
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1.5">
           Email
@@ -38,7 +51,7 @@ export function LoginForm() {
           type="email"
           required
           className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="you@bluego.ai"
+          placeholder="you@company.com"
         />
       </div>
       <div>
@@ -50,15 +63,30 @@ export function LoginForm() {
           name="password"
           type="password"
           required
+          minLength={8}
+          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="••••••••"
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1.5">
+          Confirm Password
+        </label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          required
+          minLength={8}
           className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           placeholder="••••••••"
         />
       </div>
       <SubmitButton />
       <p className="text-center text-sm text-gray-400">
-        Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-blue-400 hover:text-blue-300 transition-colors">
-          Sign up
+        Already have an account?{" "}
+        <Link href="/login" className="text-blue-400 hover:text-blue-300 transition-colors">
+          Sign in
         </Link>
       </p>
     </form>
