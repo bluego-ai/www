@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { botMessages } from '@/lib/db/schema/messages';
-import { and, eq, like, gte, lte, desc, or } from 'drizzle-orm';
+import { and, eq, ilike, gte, lte, desc, or } from 'drizzle-orm';
 
 // Schema for POST request validation
 const createMessageSchema = z.object({
@@ -95,10 +95,10 @@ export async function GET(request: NextRequest) {
     if (search) {
       conditions.push(
         or(
-          like(botMessages.messageText, `%${search}%`),
-          like(botMessages.senderName, `%${search}%`),
-          like(botMessages.recipientName, `%${search}%`),
-          like(botMessages.chatName, `%${search}%`)
+          ilike(botMessages.messageText, `%${search}%`),
+          ilike(botMessages.senderName, `%${search}%`),
+          ilike(botMessages.recipientName, `%${search}%`),
+          ilike(botMessages.chatName, `%${search}%`)
         )
       );
     }
