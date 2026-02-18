@@ -5,6 +5,7 @@ import { users } from "@/lib/db/schema/auth";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
 
 export async function signup(
   prevState: string | undefined,
@@ -45,6 +46,12 @@ export async function signup(
     name,
     email,
     password: hashedPassword,
+  });
+
+  await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
   });
 
   redirect("/dashboard");
