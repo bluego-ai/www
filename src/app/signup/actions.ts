@@ -47,5 +47,5 @@ export async function signup(
     password: hashedPassword,
   });
 
-  redirect("/login?registered=true");
+  redirect("/dashboard");
 }
