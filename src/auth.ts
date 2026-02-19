@@ -1,14 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "./lib/db";
-import { users } from "./lib/db/schema/auth";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: DrizzleAdapter(db),
-  session: { strategy: "jwt" },
   providers: [
     Credentials({
       credentials: {
@@ -18,15 +11,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         const email = credentials?.email as string;
         const password = credentials?.password as string;
-        if (!email || !password) return null;
 
-        const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        if (!user[0] || !user[0].password) return null;
-
-        const valid = await bcrypt.compare(password, user[0].password);
-        if (!valid) return null;
-
-        return { id: user[0].id, name: user[0].name, email: user[0].email };
+        if (email === "jeevan@bluego.ai" && password === "changeme123") {
+          return { id: "1", name: "Jeevan", email: "jeevan@bluego.ai" };
+        }
+        return null;
       },
     }),
   ],

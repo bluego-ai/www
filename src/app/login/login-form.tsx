@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { authenticate } from "./actions";
-import Link from "next/link";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -55,12 +54,6 @@ export function LoginForm() {
         />
       </div>
       <SubmitButton />
-      <p className="text-center text-sm text-gray-400">
-        Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-blue-400 hover:text-blue-300 transition-colors">
-          Sign up
-        </Link>
-      </p>
     </form>
   );
 }

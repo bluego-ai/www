@@ -580,30 +580,28 @@ export default function Home() {
           Simple, Transparent Pricing
         </h2>
         <p className="text-slate-400 text-center mb-16 max-w-2xl mx-auto section-reveal">
-          A fully managed AI employee for your business — no hiring, no overhead, no babysitting.
+          From cloud-hosted AI to dedicated hardware — pick the plan that fits your business. No contracts, cancel anytime.
         </p>
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="glass-card rounded-2xl p-8 relative shimmer-border section-reveal">
-            <div className="absolute -top-3 left-8 bg-gradient-to-r from-blue-500 to-blue-400 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg shadow-blue-500/30">
-              Most Popular
-            </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Standard Plan */}
+          <div className="glass-card rounded-2xl p-8 flex flex-col section-reveal">
             <h3 className="text-2xl font-bold mb-2">Standard Plan</h3>
             <div className="mb-6">
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-blue-400">$500</span>
+                <span className="text-4xl font-bold text-blue-400">$350</span>
                 <span className="text-slate-400">/week</span>
               </div>
-              <p className="text-slate-400 text-sm mt-1">+ $1,500 one-time setup fee</p>
+              <p className="text-slate-400 text-sm mt-1">+ $1,000 one-time setup fee</p>
             </div>
             <ul className="space-y-3 mb-8">
               {[
-                "Fully managed AI employee for your business",
-                "Text, email, phone & chat — all channels covered",
+                "Fully managed AI employee",
+                "Email, SMS & web chat channels",
                 "Sales follow-up & lead response",
-                "Customer support & client communications",
-                "Scheduling, dispatch & coordination",
-                "Integrates with your CRM, tools & APIs",
-                "Dedicated support & continuous optimization",
+                "Customer support & communications",
+                "Scheduling & coordination",
+                "Integrates with your CRM & tools",
+                "Dedicated support & optimization",
               ].map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
                   <span className="text-blue-400 mt-0.5">✓</span>
@@ -614,29 +612,70 @@ export default function Home() {
             <p className="text-xs text-slate-500 mb-6">
               Usage-based fees may apply for AI tokens, phone numbers, and third-party API costs.
             </p>
-            <Link
-              href="#contact"
-              className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
-            >
-              Get Started →
-            </Link>
+            <div className="mt-auto">
+              <Link
+                href="#contact"
+                className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+              >
+                Get Started →
+              </Link>
+            </div>
           </div>
 
-          <div className="glass-card rounded-2xl p-8 flex flex-col section-reveal" style={{ transitionDelay: "100ms" }}>
+          {/* Premium Plan */}
+          <div className="glass-card rounded-2xl p-8 relative shimmer-border flex flex-col section-reveal" style={{ transitionDelay: "100ms" }}>
+            <div className="absolute -top-3 left-8 bg-gradient-to-r from-blue-500 to-blue-400 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg shadow-blue-500/30">
+              Most Popular
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Premium Plan</h3>
+            <div className="mb-6">
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-blue-400">$500</span>
+                <span className="text-slate-400">/week</span>
+              </div>
+              <p className="text-slate-400 text-sm mt-1">+ $1,500 one-time setup fee</p>
+            </div>
+            <ul className="space-y-3 mb-8">
+              {[
+                "Everything in Standard, plus:",
+                "iMessage & phone call channels",
+                "Dedicated phone number for your AI",
+                "Real-time group chat with your team",
+                "Voice calls — inbound & outbound",
+                "Advanced integrations & workflows",
+                "Priority support & continuous optimization",
+              ].map((feature) => (
+                <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-blue-400 mt-0.5">✓</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-slate-500 mb-6">
+              Usage-based fees may apply for AI tokens, phone numbers, and third-party API costs.
+            </p>
+            <div className="mt-auto">
+              <Link
+                href="#contact"
+                className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+              >
+                Get Started →
+              </Link>
+            </div>
+          </div>
+
+          {/* Custom Plan */}
+          <div className="glass-card rounded-2xl p-8 flex flex-col section-reveal" style={{ transitionDelay: "200ms" }}>
             <h3 className="text-2xl font-bold mb-2">Custom Plan</h3>
             <div className="mb-6">
               <span className="text-4xl font-bold text-slate-300">Let&apos;s Talk</span>
             </div>
-            <p className="text-slate-400 text-sm mb-6 leading-relaxed">
-              Need something more advanced? Multiple AI employees, custom integrations,
-              dedicated workflows, or enterprise-scale automation — we&apos;ll build it for you.
-            </p>
             <ul className="space-y-3 mb-8">
               {[
-                "Everything in Standard",
+                "Everything in Premium",
                 "Multiple AI employees across departments",
-                "Advanced integrations & custom workflows",
-                "Voice calls, API connections & more",
+                "Custom integrations & workflows",
+                "Enterprise-scale automation",
                 "Priority support & SLA",
               ].map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-slate-300">
