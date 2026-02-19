@@ -753,12 +753,20 @@ export default function Home() {
         <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
           Book a free 30-minute call. Tell us where the chaos is — we&apos;ll show you exactly how an AI employee can handle it.
         </p>
-        <Link
-          href="https://calendly.com"
-          className="inline-block rounded-full bg-blue-500 hover:bg-blue-400 px-10 py-4 text-lg font-semibold transition-all shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02]"
-        >
-          Book Your Free Call →
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Link
+            href="https://calendly.com"
+            className="inline-block rounded-full bg-blue-500 hover:bg-blue-400 px-10 py-4 text-lg font-semibold transition-all shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02]"
+          >
+            Book Your Free Call →
+          </Link>
+          <Link
+            href="sms:+16023383473&body=DEMO"
+            className="inline-block rounded-full border border-blue-500/50 hover:border-blue-400 px-10 py-4 text-lg font-semibold transition-all hover:bg-blue-500/10 hover:scale-[1.02]"
+          >
+            💬 Text DEMO to (602) 338-3473
+          </Link>
+        </div>
       </section>
 
       {/* Footer */}
