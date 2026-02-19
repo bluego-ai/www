@@ -615,7 +615,7 @@ export default function Home() {
             <div className="mt-auto">
               <Link
                 href="#contact"
-                className="block text-center rounded-full bg-blue-500 hover:bg-blue-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+                className="block text-center rounded-full bg-green-500 hover:bg-green-400 px-6 py-3 text-sm font-semibold transition-all shadow-lg shadow-green-500/25 hover:shadow-green-500/40"
               >
                 Get Started →
               </Link>
