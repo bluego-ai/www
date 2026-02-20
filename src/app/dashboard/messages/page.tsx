@@ -96,7 +96,7 @@ export default function MessagesPage() {
       if (!response.ok) throw new Error('Failed to fetch messages');
       return response.json();
     },
-    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    refetchInterval: 5000, // Auto-refresh every 5 seconds
   });
 
   const columnHelper = createColumnHelper<BotMessage>();
@@ -442,7 +442,7 @@ export default function MessagesPage() {
 
       {/* Footer */}
       <div className="text-center text-sm text-gray-500">
-        {data?.messages.length || 0} messages • Auto-refreshes every 30 seconds
+        {data?.messages.length || 0} messages • Auto-refreshes every 5 seconds
       </div>
     </div>
   );

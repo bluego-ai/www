@@ -46,6 +46,8 @@ export default async function DashboardLayout({
             <div className="p-4 space-y-2">
               <NavLink href="/dashboard" label="Overview" />
               <NavLink href="/dashboard/messages" label="Message Feed" />
+              <NavLink href="/dashboard/test-runner" label="Test Runner" />
+              <NavLink href="/dashboard/leads" label="Leads" />
             </div>
           </nav>
           
