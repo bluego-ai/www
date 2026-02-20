@@ -70,6 +70,7 @@ export default function MessagesPage() {
   });
 
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [pollingEnabled, setPollingEnabled] = useState(true);
 
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -96,7 +97,7 @@ export default function MessagesPage() {
       if (!response.ok) throw new Error('Failed to fetch messages');
       return response.json();
     },
-    refetchInterval: 5000, // Auto-refresh every 5 seconds
+    refetchInterval: pollingEnabled ? 5000 : false,
   });
 
   const columnHelper = createColumnHelper<BotMessage>();
@@ -271,14 +272,27 @@ export default function MessagesPage() {
             Real-time message logs from all fleet bots
           </p>
         </div>
-        <button
-          onClick={() => refetch()}
-          disabled={isLoading}
-          className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-gray-200 transition-colors"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setPollingEnabled(!pollingEnabled)}
+            className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-colors ${
+              pollingEnabled
+                ? 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-900/50'
+                : 'bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${pollingEnabled ? 'bg-green-400 animate-pulse' : 'bg-gray-500'}`} />
+            {pollingEnabled ? 'Live' : 'Paused'}
+          </button>
+          <button
+            onClick={() => refetch()}
+            disabled={isLoading}
+            className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-gray-200 transition-colors"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -442,7 +456,7 @@ export default function MessagesPage() {
 
       {/* Footer */}
       <div className="text-center text-sm text-gray-500">
-        {data?.messages.length || 0} messages • Auto-refreshes every 5 seconds
+        {data?.messages.length || 0} messages • {pollingEnabled ? 'Auto-refreshes every 5 seconds' : 'Polling paused'}
       </div>
     </div>
   );
